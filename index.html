@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom IT Bingo - Player</title>
+  <title>I&O EOY D-E-B-U-G</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -64,6 +64,28 @@
       border-radius: 16px;
       box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
       padding: 20px;
+    }
+
+    .generator-section {
+      padding: 4px 8px;
+    }
+
+    .grid-labels {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      text-align: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .grid-label {
+      padding: 8px 0;
+      border-radius: 12px;
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px solid var(--border);
+      box-shadow: inset 0 -2px 0 rgba(15, 23, 42, 0.05);
     }
 
     label {
@@ -229,12 +251,12 @@
 </head>
 <body>
   <header>
-    <h1>Custom IT Bingo</h1>
+    <h1>I&O EOY D-E-B-U-G</h1>
     <p>Open this page with your shared link to load a term set. Everyone gets their own randomized card.</p>
   </header>
 
   <main>
-    <section class="panel">
+    <section class="generator-section">
       <label>Using a shared term set</label>
       <p class="hint">
         Send teammates the link created on the generator page. Each visitor will receive a unique shuffle while keeping the
@@ -265,6 +287,13 @@
           <button id="randomize">Randomize card</button>
           <button class="secondary" id="clearMarks">Clear marks</button>
         </div>
+      </div>
+      <div class="grid-labels">
+        <div class="grid-label">D</div>
+        <div class="grid-label">E</div>
+        <div class="grid-label">B</div>
+        <div class="grid-label">U</div>
+        <div class="grid-label">G</div>
       </div>
       <div class="grid" id="grid"></div>
     </section>
