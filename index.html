@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom IT Bingo</title>
+  <title>Custom IT Bingo - Player</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -72,25 +72,39 @@
       margin-bottom: 8px;
     }
 
-    textarea {
-      width: 100%;
-      min-height: 200px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 12px;
-      resize: vertical;
-      font-size: 14px;
-      font-family: inherit;
-      color: var(--text);
-      background: #f8fafc;
-    }
-
     .actions {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-top: 12px;
       flex-wrap: wrap;
+    }
+
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    a.button-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-decoration: none;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    a.button-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.28);
     }
 
     button {
@@ -121,90 +135,148 @@
       margin-top: 6px;
     }
 
-    .status {
-      margin-top: 8px;
-      color: var(--accent);
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eef2ff;
+      color: #4338ca;
+      border-radius: 999px;
+      padding: 8px 12px;
       font-weight: 700;
-      min-height: 20px;
+      font-size: 13px;
     }
 
     .grid-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      position: relative;
     }
 
     .grid-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      width: 100%;
+      gap: 10px;
     }
 
     .cell {
       background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px;
-      min-height: 80px;
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      min-height: 90px;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      font-weight: 700;
+      box-shadow: inset 0 -2px 0 rgba(15, 23, 42, 0.05);
       cursor: pointer;
-      position: relative;
-      transition: all 0.15s ease;
-      user-select: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease, color 0.2s ease;
     }
 
     .cell:hover {
-      border-color: var(--primary);
-      box-shadow: inset 0 0 0 1px var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.12);
     }
 
     .cell.marked {
-      background: #eef2ff;
-      border-color: #c7d2fe;
-      color: #312e81;
-      box-shadow: inset 0 0 0 2px #6366f1;
+      background: rgba(37, 99, 235, 0.1);
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+      box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.3);
     }
 
     .cell.free {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: white;
-      border: none;
-      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.35);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(249, 115, 22, 0.12));
+      color: #0f172a;
+      border-style: dashed;
+      border-color: #cbd5e1;
+      cursor: default;
     }
 
-    .badge {
-      background: rgba(37, 99, 235, 0.12);
-      color: var(--primary);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-weight: 700;
-      font-size: 12px;
+    .status {
+      margin-top: 12px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .pill-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #ecfeff;
+      border: 1px solid #bae6fd;
+      color: #0c4a6e;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    ul {
+      margin: 12px 0;
+      padding-left: 20px;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Custom IT Bingo</h1>
-    <p>Paste your favorite IT buzzwords to create a shareable, clickable bingo card.</p>
+    <p>Open this page with your shared link to load a term set. Everyone gets their own randomized card.</p>
   </header>
 
   <main>
     <section class="panel">
-      <label for="terms">IT terms (one per line or separated by commas)</label>
-      <textarea id="terms" placeholder="Cloud, Kubernetes, CI/CD, Microservices...">API gateway
+      <label>Using a shared term set</label>
+      <p class="hint">
+        Send teammates the link created on the generator page. Each visitor will receive a unique shuffle while keeping the
+        same list of terms.
+      </p>
+      <div class="pill-note">
+        🎯 Need a link? Visit the generator page to craft one with your own terms.
+      </div>
+      <div class="link-row">
+        <a class="button-link" href="generator.html">Open generator</a>
+        <div class="badge" id="termCount">0 terms loaded</div>
+      </div>
+      <ul>
+        <li>Click any tile to mark it; use Clear marks to reset.</li>
+        <li>Press Randomize to reshuffle and get a fresh card.</li>
+        <li>The center tile is always FREE.</li>
+      </ul>
+      <div class="status" id="status"></div>
+    </section>
+
+    <section class="panel grid-wrapper">
+      <div class="grid-header">
+        <div>
+          <div class="badge">5 × 5 grid</div>
+          <p class="hint" style="margin-top:6px">Load a shared link then shuffle to get your personal card.</p>
+        </div>
+        <div class="actions">
+          <button id="randomize">Randomize card</button>
+          <button class="secondary" id="clearMarks">Clear marks</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <script>
+    const grid = document.getElementById('grid');
+    const status = document.getElementById('status');
+    const termCountBadge = document.getElementById('termCount');
+    const FREE_INDEX = 12; // center of 5x5
+
+    const defaultTerms = `API gateway
 Serverless
 Zero trust
 Kubernetes
@@ -227,33 +299,7 @@ Post-mortem
 Rollbacks
 Incident Commander
 Runbook
-Root cause analysis</textarea>
-      <div class="hint">Provide at least 24 unique terms. The center space is always FREE.</div>
-      <div class="actions">
-        <button id="randomize">Randomize card</button>
-        <button class="secondary" id="clearMarks">Clear marks</button>
-      </div>
-      <div class="status" id="status"></div>
-    </section>
-
-    <section class="panel grid-wrapper">
-      <div class="grid-header">
-        <div>
-          <div class="badge">5 × 5 grid</div>
-          <p class="hint" style="margin-top:6px">Click any tile to mark it. Use Randomize to reshuffle terms.</p>
-        </div>
-        <div class="badge" id="termCount">0 terms loaded</div>
-      </div>
-      <div class="grid" id="grid"></div>
-    </section>
-  </main>
-
-  <script>
-    const grid = document.getElementById('grid');
-    const termsInput = document.getElementById('terms');
-    const status = document.getElementById('status');
-    const termCountBadge = document.getElementById('termCount');
-    const FREE_INDEX = 12; // center of 5x5
+Root cause analysis`;
 
     function parseTerms(raw) {
       return Array.from(new Set(
@@ -298,17 +344,33 @@ Root cause analysis</textarea>
       });
     }
 
-    function generateCard() {
-      const terms = parseTerms(termsInput.value);
-      updateTermCount(terms.length);
+    function loadTermsFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const encodedTerms = params.get('terms');
+      if (!encodedTerms) {
+        return parseTerms(defaultTerms);
+      }
 
-      if (terms.length < 24) {
-        status.textContent = `Please provide at least 24 unique terms (currently ${terms.length}).`;
+      try {
+        return parseTerms(decodeURIComponent(encodedTerms));
+      } catch (err) {
+        status.textContent = 'Could not read shared terms. Using default list instead.';
+        return parseTerms(defaultTerms);
+      }
+    }
+
+    const availableTerms = loadTermsFromUrl();
+
+    function generateCard() {
+      updateTermCount(availableTerms.length);
+
+      if (availableTerms.length < 24) {
+        status.textContent = `Provide at least 24 unique terms on the generator page (currently ${availableTerms.length}).`;
         grid.innerHTML = '';
         return;
       }
 
-      const shuffled = shuffle(terms).slice(0, 24);
+      const shuffled = shuffle(availableTerms).slice(0, 24);
       renderGrid(shuffled);
       status.textContent = 'Shuffled a fresh card!';
     }
@@ -323,7 +385,7 @@ Root cause analysis</textarea>
     document.getElementById('randomize').addEventListener('click', generateCard);
     document.getElementById('clearMarks').addEventListener('click', clearMarks);
 
-    // Initial render with starter terms
+    // Initial render using provided (or default) terms
     generateCard();
   </script>
 </body>

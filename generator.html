@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom IT Bingo - Generator</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --accent: #f97316;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #94a3b8;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background: linear-gradient(180deg, #e2e8f0 0%, #f8fafc 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 32px 16px 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+      padding: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 12px;
+      resize: vertical;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: #f8fafc;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+    }
+
+    button.secondary {
+      background: #0ea5e9;
+      box-shadow: 0 10px 25px rgba(14, 165, 233, 0.25);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .status {
+      margin-top: 12px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      background: #f8fafc;
+      color: var(--text);
+    }
+
+    .pill-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #ecfeff;
+      border: 1px solid #bae6fd;
+      color: #0c4a6e;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Create a shareable IT Bingo link</h1>
+    <p>Build a reusable link with your terms so every participant gets their own randomized card.</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <label for="terms">Add your terms</label>
+      <textarea id="terms" placeholder="Cloud, Kubernetes, CI/CD, Microservices...">API gateway
+Serverless
+Zero trust
+Kubernetes
+CI/CD pipeline
+Microservices
+Observability
+Feature flag
+Load balancer
+Edge computing
+DevSecOps
+Immutable infrastructure
+Blue/green deployment
+Canary release
+Service mesh
+Infrastructure as Code
+Chaos engineering
+Latency budget
+Failover
+Post-mortem
+Rollbacks
+Incident Commander
+Runbook
+Root cause analysis</textarea>
+      <div class="hint">Provide at least 24 unique terms. The center space is always FREE.</div>
+      <div class="actions">
+        <button id="buildLink">Generate shareable link</button>
+        <button class="secondary" id="copyLink">Copy link</button>
+      </div>
+      <div class="status" id="status"></div>
+    </section>
+
+    <section class="panel">
+      <label for="shareLink">Share this link with players</label>
+      <input id="shareLink" type="text" readonly placeholder="Generate a link to share" />
+      <div class="hint">Send the link to players. Each visitor can reshuffle on their own to get a unique card.</div>
+      <div class="pill-note" style="margin-top:10px;">👉 The link loads into <a href="index.html" style="font-weight: 700; color: #2563eb; text-decoration: none;">the player page</a>.</div>
+    </section>
+  </main>
+
+  <script>
+    const termsInput = document.getElementById('terms');
+    const status = document.getElementById('status');
+    const shareLink = document.getElementById('shareLink');
+
+    function parseTerms(raw) {
+      return Array.from(new Set(
+        raw
+          .split(/\n|,/)
+          .map((item) => item.trim())
+          .filter(Boolean)
+      ));
+    }
+
+    function buildPlayerUrl(terms) {
+      const base = new URL('index.html', window.location.href);
+      base.searchParams.set('terms', terms.join('\n'));
+      return base.toString();
+    }
+
+    function generateLink() {
+      const terms = parseTerms(termsInput.value);
+
+      if (terms.length < 24) {
+        status.textContent = `Add at least 24 unique terms (currently ${terms.length}).`;
+        shareLink.value = '';
+        return null;
+      }
+
+      const url = buildPlayerUrl(terms);
+      shareLink.value = url;
+      status.textContent = 'Shareable link created!';
+      return url;
+    }
+
+    async function copyLink() {
+      const url = shareLink.value || generateLink();
+      if (!url) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(url);
+        status.textContent = 'Copied to clipboard!';
+      } catch (err) {
+        status.textContent = 'Unable to copy automatically. Please copy the link manually.';
+      }
+    }
+
+    document.getElementById('buildLink').addEventListener('click', generateLink);
+    document.getElementById('copyLink').addEventListener('click', copyLink);
+  </script>
+</body>
+</html>
